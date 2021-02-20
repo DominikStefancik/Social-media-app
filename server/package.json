@@ -1,17 +1,24 @@
 {
   "name": "social-media-app-server",
   "version": "0.0.0",
-  "description": "",
-  "main": "build/src/index.js",
-  "types": "build/src/index.d.ts",
+  "description": "A simple social media app using Node, Typescript, Graphql, React and MongoDB",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "files": [
-    "build/src"
+    "dist/src"
   ],
   "license": "MIT",
-  "keywords": [],
+  "keywords": [
+    "Node",
+    "Typescript",
+    "Graphql",
+    "React",
+    "MongoDB"
+  ],
   "scripts": {
     "start": "concurrently --kill-others 'yarn run compile:watch' 'yarn run dev'",
-    "dev": "nodemon build/src/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
+    "rebuild": "yarn run clean && yarn run compile",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc -p .",
@@ -22,23 +29,25 @@
     "posttest": "yarn run lint"
   },
   "dependencies": {
-    "concurrently": "^5.3.0",
+    "concurrently": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "express-graphql": "^0.11.0",
-    "graphql": "^15.4.0",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.5.0",
     "graphql-playground-middleware-express": "^1.7.22",
-    "mongoose": "^5.10.13"
+    "mongoose": "^5.11.17"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.8",
-    "@types/express": "^4.17.8",
+    "@types/cors": "^2.8.10",
+    "@types/express": "^4.17.11",
     "@types/express-graphql": "^0.9.0",
-    "@types/mongoose": "^5.7.37",
-    "@types/node": "^14.14.6",
-    "gts": "^3.0.2",
-    "nodemon": "^2.0.6",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.3"
+    "@types/mongoose": "^5.10.3",
+    "@types/node": "^14.14.31",
+    "eslint-plugin-prettier": "^3.3.1",
+    "gts": "^3.1.0",
+    "prettier": "^2.2.1",
+    "ts-node-dev": "^1.1.1",
+    "typescript": "^4.1.5",
+    "yarn": "^1.22.10"
   }
 }

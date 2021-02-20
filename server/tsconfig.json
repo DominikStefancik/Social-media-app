@@ -4,7 +4,7 @@
   "moduleResolution": "node",
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "build",
+    "outDir": "dist",
     "baseUrl": ".",
     "paths": {
       "@local/*": ["src/*"]
@@ -21,6 +21,6 @@
     "./src/**/*.spec.js",
     "./src/tests",
     "node_modules",
-    "build"
+    "dist"
   ]
 }
