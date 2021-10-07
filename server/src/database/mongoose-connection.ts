@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import * as pino from 'pino';
 
 export interface IConnectionProperties {
   databaseUrl: string;
@@ -6,16 +7,19 @@ export interface IConnectionProperties {
 }
 
 export class MongooseConnection {
-  constructor(readonly config: IConnectionProperties) {}
+  constructor(
+    private readonly config: IConnectionProperties,
+    private readonly logger: pino.Logger
+  ) {}
 
   public async connect() {
-    console.log('Connecting to the database ...');
+    this.logger.info('Connecting to the database...');
     await mongoose.connect(this.config.databaseUrl, { dbName: this.config.databaseName });
-    console.log('Database connected...');
+    this.logger.info('Database connected...');
   }
 
   public disconnect() {
     mongoose.disconnect();
-    console.log('Database disconnected...');
+    this.logger.info('Database disconnected...');
   }
 }

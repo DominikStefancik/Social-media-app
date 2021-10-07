@@ -4,15 +4,24 @@ import * as cors from 'cors';
 import { apolloServer } from '@local/graphql/server';
 import { MongooseConnection } from '@local/database/mongoose-connection';
 import { getAppConfig } from './config';
+import { getLogger } from '@local/logging/logger';
+
+const port = 3000;
+const config = getAppConfig();
+const logger = getLogger(`${config.appName}/server`);
 
 const main = async (): Promise<express.Express> => {
-  const { databaseUrl, databaseName } = getAppConfig();
   const app: express.Express = express();
 
-  const dbConnection = new MongooseConnection({
-    databaseUrl,
-    databaseName,
-  });
+  logger.info(`Starting ${config.appName}...`);
+
+  const dbConnection = new MongooseConnection(
+    {
+      databaseUrl: config.databaseUrl,
+      databaseName: config.databaseName,
+    },
+    logger
+  );
 
   await dbConnection.connect();
 
@@ -28,7 +37,7 @@ const main = async (): Promise<express.Express> => {
 };
 
 main().then((app) => {
-  app.listen(8080, () => {
-    console.log('Server listening for requests on port 8080');
+  app.listen(port, () => {
+    logger.info(`Server listening for requests on port ${port}`);
   });
 });
