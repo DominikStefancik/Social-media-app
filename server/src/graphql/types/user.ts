@@ -9,3 +9,8 @@ export interface CreateUserData {
   confirmedPassword: string;
   email: string;
 }
+
+export interface LoginUserData {
+  username: string;
+  password: string;
+}

@@ -22,6 +22,10 @@ export const schema = gql`
     confirmedPassword: String!
     email: String!
   }
+  input LoginUserData {
+    username: String!
+    password: String!
+  }
 
   type Query {
     user(selector: UserSelector): User
@@ -29,5 +33,6 @@ export const schema = gql`
 
   type Mutation {
     createUser(data: CreateUserData): User!
+    loginUser(data: LoginUserData): User!
   }
 `;
