@@ -15,11 +15,11 @@ export class MongooseConnection {
   public async connect() {
     this.logger.info('Connecting to the database...');
     await mongoose.connect(this.config.databaseUrl, { dbName: this.config.databaseName });
-    this.logger.info('Database connected...');
+    this.logger.info('Database connected.');
   }
 
-  public disconnect() {
-    mongoose.disconnect();
-    this.logger.info('Database disconnected...');
+  public async disconnect() {
+    await mongoose.disconnect();
+    this.logger.info('Database disconnected.');
   }
 }

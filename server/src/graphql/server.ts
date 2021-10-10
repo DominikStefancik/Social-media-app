@@ -1,8 +1,5 @@
-import { ApolloServer } from 'apollo-server-express';
-import { typeDefinitions as typeDefs } from './type-definitions';
-import { resolvers } from './resolvers';
+import { UserService } from '@local/services/user/service';
 
-export const apolloServer = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
+export interface ApolloServerContext {
+  userService: UserService;
+}
