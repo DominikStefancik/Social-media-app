@@ -12,27 +12,66 @@ export const schema = gql`
     lastUpdated: Date
     token: String
   }
+
   input UserSelector {
     id: ID
     username: String
   }
+
+  input UserFilter {
+    id_in: [ID!]
+    username_in: [String!]
+  }
+
   input CreateUserData {
     username: String!
     password: String!
     confirmedPassword: String!
     email: String!
   }
+
   input LoginUserData {
     username: String!
     password: String!
   }
 
+  type Post {
+    id: ID!
+    author: User!
+    text: String!
+    createdAt: Date!
+    lastUpdated: Date
+  }
+
+  input PostSelector {
+    id: ID
+  }
+
+  input PostFilter {
+    id_in: [ID!]
+    authorId: ID
+    authorId_in: [ID!]
+    createdFrom: Date
+    createdTo: Date
+  }
+
+  input CreatePostData {
+    text: String!
+  }
+
   type Query {
-    user(selector: UserSelector): User
+    user(selector: UserSelector!): User
+    users(filter: UserFilter): [User!]!
+    post(selector: PostSelector!): Post
+    posts(filter: PostFilter): [Post!]!
   }
 
   type Mutation {
-    createUser(data: CreateUserData): User!
-    loginUser(data: LoginUserData): User!
+    createUser(data: CreateUserData!): User!
+    loginUser(data: LoginUserData!): User!
+    deleteUser(selector: UserSelector!): Boolean!
+    createPost(data: CreatePostData!): Post!
+    deletePost(selector: PostSelector!): Boolean!
+    deletePosts(filter: PostFilter!): Boolean!
   }
 `;

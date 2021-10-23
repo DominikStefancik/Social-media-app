@@ -1,13 +1,10 @@
 import { getAppConfig } from '@local/config';
 import { getLogger } from '@local/logging/logger';
-import { MongooseConnection } from '@local/database/mongoose-connection';
-import { UserRepository } from '@local/database/user/repository';
-import { UserModel } from '@local/database/user/model';
+import { MongooseConnection } from '@local/db-store/mongoose-connection';
 import { ApolloServer } from 'apollo-server-express';
 import { schema as typeDefs } from '@local/graphql/schema';
 import { resolvers } from '@local/graphql/resolvers/resolvers';
-import { UserService } from '@local/services/user/service';
-import { ApolloServerContext } from '@local/graphql/server';
+import { getContext } from '@local/graphql/context';
 
 export const setup = async () => {
   const config = getAppConfig();
@@ -23,10 +20,7 @@ export const setup = async () => {
 
   await dbConnection.connect();
 
-  const context: ApolloServerContext = {
-    userService: new UserService(new UserRepository(UserModel, logger), logger),
-  };
-
+  const context = getContext(logger);
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,

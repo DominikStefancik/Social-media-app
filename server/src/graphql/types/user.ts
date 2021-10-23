@@ -3,6 +3,11 @@ export interface UserSelector {
   username?: string;
 }
 
+export interface UserFilter {
+  id_in?: string[];
+  username_in?: string[];
+}
+
 export interface CreateUserData {
   username: string;
   password: string;

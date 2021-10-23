@@ -1,4 +1,8 @@
 import { CreateUserData, LoginUserData } from '@local/graphql/types/user';
+import * as express from 'express';
+import { getAppConfig } from '@local/config';
+import * as jwt from 'jsonwebtoken';
+import { User } from '@local/db-store/user/model';
 
 type UserInputErrors = { [error: string]: string };
 
@@ -42,4 +46,25 @@ export const validateUserLoginData = (data: LoginUserData): UserInputErrors => {
   }
 
   return errors;
+};
+
+export const validateUserAuthorisation = (request: express.Request): User => {
+  const { jwtTokenSecret } = getAppConfig();
+  const authHeader = request.headers.authorization;
+
+  if (authHeader) {
+    const token = authHeader.split('Bearer ')[1];
+
+    if (token) {
+      try {
+        const user = jwt.verify(token, jwtTokenSecret);
+
+        return user as User;
+      } catch (error) {
+        throw Error('Invalid/Expired token');
+      }
+    }
+    throw new Error('Authentication token must be in the format "Bearer [token]"');
+  }
+  throw new Error('Authorisation header must be provided');
 };
