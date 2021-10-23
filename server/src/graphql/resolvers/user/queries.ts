@@ -1,7 +1,7 @@
 import { ApolloServerContext } from '@local/graphql/context';
 import { UserFilter, UserSelector } from '@local/graphql/types/user';
 
-export const userQueries = {
+export const userRootQueriesResolvers = {
   user: (_: any, args: { selector: UserSelector }, { userService }: ApolloServerContext) => {
     const { selector } = args;
     return userService.getUser(selector);

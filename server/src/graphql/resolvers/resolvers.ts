@@ -1,19 +1,26 @@
 import { dateScalar } from '@local/graphql/scalars/date';
-import { userMutations } from '@local/graphql/resolvers/user/mutations';
-import { userQueries } from '@local/graphql/resolvers/user/queries';
-import { postMutations } from '@local/graphql/resolvers/post/mutations';
-import { postQueries } from '@local/graphql/resolvers/post/queries';
+import { userMutationsResolvers } from '@local/graphql/resolvers/user/mutations';
+import { userRootQueriesResolvers } from '@local/graphql/resolvers/user/queries';
+import { postMutationsResolvers } from '@local/graphql/resolvers/post/mutations';
+import {
+  postFieldQueriesResolvers,
+  postRootQueriesResolvers,
+} from '@local/graphql/resolvers/post/queries';
 
 export const resolvers = {
   Date: dateScalar,
 
   Query: {
-    ...userQueries,
-    ...postQueries,
+    ...userRootQueriesResolvers,
+    ...postRootQueriesResolvers,
   },
 
   Mutation: {
-    ...userMutations,
-    ...postMutations,
+    ...userMutationsResolvers,
+    ...postMutationsResolvers,
+  },
+
+  Post: {
+    ...postFieldQueriesResolvers,
   },
 };

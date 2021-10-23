@@ -3,7 +3,7 @@ import { CreatePostData, PostFilter, PostSelector } from '@local/graphql/types/p
 import { AuthenticationError } from 'apollo-server-express';
 import { User } from '@local/db-store/user/model';
 
-export const postMutations = {
+export const postMutationsResolvers = {
   createPost: async (
     _: any,
     args: { data: CreatePostData },

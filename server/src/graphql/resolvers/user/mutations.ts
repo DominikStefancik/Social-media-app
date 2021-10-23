@@ -2,7 +2,7 @@ import { ApolloServerContext } from '@local/graphql/context';
 import { CreateUserData, LoginUserData, UserSelector } from '@local/graphql/types/user';
 import { UserInputError } from 'apollo-server-express';
 
-export const userMutations = {
+export const userMutationsResolvers = {
   createUser: async (
     _: any,
     args: { data: CreateUserData },
