@@ -1,6 +1,6 @@
 import { ApolloServerContext } from '@local/graphql/context';
 import { PostFilter, PostSelector } from '@local/graphql/types/post';
-import { UserSelector } from '@local/graphql/types/user';
+import { Post } from '@local/db-store/post/model';
 
 export const postRootQueriesResolvers = {
   post: async (_: any, args: { selector: PostSelector }, { postService }: ApolloServerContext) => {
@@ -17,8 +17,9 @@ export const postRootQueriesResolvers = {
 };
 
 export const postFieldQueriesResolvers = {
-  author: (parent: any, args: { selector: UserSelector }, context: ApolloServerContext) => {
-    const { selector } = args;
-    return context.userService.getUser(selector);
+  author: (parent: Post, _: any, context: ApolloServerContext) => {
+    const { authorId } = parent;
+
+    return context.userService.getUser({ id: authorId });
   },
 };
