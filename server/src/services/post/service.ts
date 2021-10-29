@@ -1,8 +1,15 @@
 import * as pino from 'pino';
+import { isEmpty } from 'lodash';
 import { PostRepository } from '@local/db-store/post/repository';
 import { Post, PostModel } from '@local/db-store/post/model';
 import { CreatePostData, PostFilter, PostSelector } from '@local/graphql/types/post';
 import { User } from '@local/db-store/user/model';
+import { CommentSelector, CreateCommentData } from '@local/graphql/types/comment';
+import {
+  validateCommentSelector,
+  validateCreateCommentData,
+} from '@local/services/post/validators';
+import { InputError, UserAuthorisationError } from '@local/errors/types';
 
 export class PostService {
   private readonly repository: PostRepository;
@@ -14,6 +21,11 @@ export class PostService {
 
   public createPost(user: User, data: CreatePostData): Promise<Post> {
     const { text } = data;
+
+    if (text.trim() === '') {
+      throw new InputError('Text must not be empty');
+    }
+
     return this.repository.createPost(user.id, text);
   }
 
@@ -21,11 +33,11 @@ export class PostService {
     const post = await this.getPost(selector);
 
     if (!post) {
-      throw new Error('Cannot delete non-existing post.');
+      throw new InputError(`The post (id=${selector.id}) doesn't exist`);
     }
 
     if (post.authorId !== user.id) {
-      throw new Error('User is not an author of the post.');
+      throw new UserAuthorisationError('User is not an author of the post.');
     }
 
     return this.repository.deletePost(selector);
@@ -36,7 +48,7 @@ export class PostService {
     const isAuthorOfAll = posts.every((post) => post.authorId === user.id);
 
     if (!isAuthorOfAll) {
-      throw new Error('User is not an author of all posts');
+      throw new UserAuthorisationError('User is not an author of all posts');
     }
 
     return this.repository.deletePosts(filter);
@@ -48,5 +60,68 @@ export class PostService {
 
   public getPosts(filter: PostFilter): Promise<Post[]> {
     return this.repository.getPosts(filter);
+  }
+
+  public async createComment(user: User, data: CreateCommentData): Promise<Post> {
+    const { postId, text } = data;
+    const errors = validateCreateCommentData(data);
+
+    if (!isEmpty(errors)) {
+      throw new InputError(Object.values(errors)[0] as string);
+    }
+
+    const post = await this.getPost({ id: postId });
+
+    if (!post) {
+      throw new InputError(`The post (id=${postId}) doesn't exist`);
+    }
+
+    return this.repository.createComment(postId, user.id, text);
+  }
+
+  public async deleteComment(user: User, selector: CommentSelector): Promise<Post> {
+    const { postId, commentId } = selector;
+    const errors = validateCommentSelector(selector);
+
+    if (!isEmpty(errors)) {
+      throw new InputError(Object.values(errors)[0] as string);
+    }
+
+    const post = await this.getPost({ id: postId });
+
+    if (!post) {
+      throw new InputError(`The post (id=${postId}) doesn't exist`);
+    }
+
+    const comment = post.comments.find((comment) => comment.id === commentId);
+
+    if (!comment) {
+      throw new InputError(
+        `The comment (id=${commentId}) in the post (id=${postId}) doesn't exist`
+      );
+    }
+
+    if (user.id !== post.authorId && user.id !== comment.authorId) {
+      throw new UserAuthorisationError(
+        'Only author of the post or author of the comment can delete a comment'
+      );
+    }
+
+    return this.repository.deleteComment(selector);
+  }
+
+  public async likePost(user: User, selector: PostSelector): Promise<Post> {
+    const { id } = selector;
+    const post = await this.getPost({ id });
+
+    if (id.trim() === '') {
+      throw new InputError('Id must not be empty');
+    }
+
+    if (!post) {
+      throw new InputError(`The post (id=${id}) doesn't exist`);
+    }
+
+    return this.repository.likePost(selector, user.id);
   }
 }

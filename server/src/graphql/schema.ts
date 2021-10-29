@@ -41,6 +41,8 @@ export const schema = gql`
     text: String!
     createdAt: Date!
     lastUpdated: Date
+    comments: [Comment!]!
+    likes: [String!]!
   }
 
   input PostSelector {
@@ -59,6 +61,23 @@ export const schema = gql`
     text: String!
   }
 
+  type Comment {
+    id: ID!
+    author: User!
+    text: String!
+    createdAt: Date!
+  }
+
+  input CommentSelector {
+    postId: ID!
+    commentId: ID!
+  }
+
+  input CreateCommentData {
+    postId: ID!
+    text: String!
+  }
+
   type Query {
     user(selector: UserSelector!): User
     users(filter: UserFilter): [User!]!
@@ -73,5 +92,8 @@ export const schema = gql`
     createPost(data: CreatePostData!): Post!
     deletePost(selector: PostSelector!): Boolean!
     deletePosts(filter: PostFilter!): Boolean!
+    createComment(data: CreateCommentData!): Post!
+    deleteComment(selector: CommentSelector!): Post!
+    likePost(selector: PostSelector!): Post!
   }
 `;

@@ -12,6 +12,7 @@ import {
   validateUserAuthorisation,
   validateUserLoginData,
 } from '@local/services/user/validators';
+import { InputError } from '@local/errors/types';
 
 type UserWithToken = User & { token?: string };
 
@@ -29,7 +30,7 @@ export class UserService {
     const errors = validateCreateUserData(data);
 
     if (!isEmpty(errors)) {
-      throw new Error(Object.values(errors)[0] as string);
+      throw new InputError(Object.values(errors)[0] as string);
     }
 
     if (await this.getUser({ username })) {
@@ -49,18 +50,18 @@ export class UserService {
     const errors = validateUserLoginData(data);
 
     if (!isEmpty(errors)) {
-      throw new Error(Object.values(errors)[0] as string);
+      throw new InputError(Object.values(errors)[0] as string);
     }
 
     const user: UserWithToken | null = await this.getUser({ username });
 
     if (!user) {
-      throw new Error(`User with the username ${username} doesn't exist.`);
+      throw new InputError(`User with the username ${username} doesn't exist.`);
     }
 
     const isValidPassword = await compare(password, user.password);
     if (!isValidPassword) {
-      throw new Error('Password is incorrect');
+      throw new InputError('Password is incorrect');
     }
 
     user.token = this.generateJwtToken(user);
@@ -80,7 +81,7 @@ export class UserService {
     return this.repository.deleteUser(selector);
   }
 
-  public isUserAuthorised(request: express.Request) {
+  public getAuthorisedUser(request: express.Request): User {
     return validateUserAuthorisation(request);
   }
 

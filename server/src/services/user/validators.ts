@@ -3,21 +3,20 @@ import * as express from 'express';
 import { getAppConfig } from '@local/config';
 import * as jwt from 'jsonwebtoken';
 import { User } from '@local/db-store/user/model';
+import { InputValidationErrors, UserValidationError } from '@local/errors/types';
 
-type UserInputErrors = { [error: string]: string };
-
-export const validateCreateUserData = (data: CreateUserData): UserInputErrors => {
+export const validateCreateUserData = (data: CreateUserData): InputValidationErrors => {
   const { username, password, confirmedPassword, email } = data;
-  const errors = {} as UserInputErrors;
+  const errors = {} as InputValidationErrors;
 
   if (username.trim() === '') {
     errors.username = 'Username must not be empty';
   }
 
   if (password.trim() === '') {
-    errors.username = 'Password must not be empty';
+    errors.password = 'Password must not be empty';
   } else if (password !== confirmedPassword) {
-    errors.username = 'Confirmed password has to be exactly the same as password';
+    errors.password = 'Confirmed password has to be exactly the same as password';
   }
 
   if (email.trim() === '') {
@@ -33,16 +32,16 @@ export const validateCreateUserData = (data: CreateUserData): UserInputErrors =>
   return errors;
 };
 
-export const validateUserLoginData = (data: LoginUserData): UserInputErrors => {
+export const validateUserLoginData = (data: LoginUserData): InputValidationErrors => {
   const { username, password } = data;
-  const errors = {} as UserInputErrors;
+  const errors = {} as InputValidationErrors;
 
   if (username.trim() === '') {
     errors.username = 'Username must not be empty';
   }
 
   if (password.trim() === '') {
-    errors.username = 'Password must not be empty';
+    errors.password = 'Password must not be empty';
   }
 
   return errors;
@@ -61,10 +60,10 @@ export const validateUserAuthorisation = (request: express.Request): User => {
 
         return user as User;
       } catch (error) {
-        throw Error('Invalid/Expired token');
+        throw new UserValidationError('Invalid/Expired token');
       }
     }
-    throw new Error('Authentication token must be in the format "Bearer [token]"');
+    throw new UserValidationError('Authentication token must be in the format "Bearer [token]"');
   }
-  throw new Error('Authorisation header must be provided');
+  throw new UserValidationError('Authorisation header must be provided');
 };

@@ -17,9 +17,9 @@ export const postRootQueriesResolvers = {
 };
 
 export const postFieldQueriesResolvers = {
-  author: (parent: Post, _: any, context: ApolloServerContext) => {
+  author: (parent: Post, _: any, { userService }: ApolloServerContext) => {
     const { authorId } = parent;
 
-    return context.userService.getUser({ id: authorId });
+    return userService.getUser({ id: authorId });
   },
 };

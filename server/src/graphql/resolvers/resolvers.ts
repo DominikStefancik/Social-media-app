@@ -6,6 +6,8 @@ import {
   postFieldQueriesResolvers,
   postRootQueriesResolvers,
 } from '@local/graphql/resolvers/post/queries';
+import { commentsMutationsResolvers } from '@local/graphql/resolvers/comment/mutations';
+import { commentFieldQueriesResolvers } from '@local/graphql/resolvers/comment/queries';
 
 export const resolvers = {
   Date: dateScalar,
@@ -18,9 +20,14 @@ export const resolvers = {
   Mutation: {
     ...userMutationsResolvers,
     ...postMutationsResolvers,
+    ...commentsMutationsResolvers,
   },
 
   Post: {
     ...postFieldQueriesResolvers,
+  },
+
+  Comment: {
+    ...commentFieldQueriesResolvers,
   },
 };

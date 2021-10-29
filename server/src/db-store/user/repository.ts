@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { mongoose } from '@typegoose/typegoose';
 import * as pino from 'pino';
+import { isUndefined, omitBy } from 'lodash';
 import { User } from '@local/db-store/user/model';
 import { UserFilter, UserSelector } from '@local/graphql/types/user';
 
@@ -56,6 +57,6 @@ export class UserRepository {
         }
       : {};
 
-    return this.model.find(mongoFilter);
+    return this.model.find(omitBy(mongoFilter, isUndefined));
   }
 }
