@@ -1,0 +1,11 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "extensions": [".tsx", ".ts", ".js"],
+  "moduleResolution": "node",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitReturns": false
+  }
+}

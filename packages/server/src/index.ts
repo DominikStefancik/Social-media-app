@@ -1,4 +1,7 @@
-import 'module-alias/register';
+// At the very beginning of the index.ts file we need to setup an alias which will be used to avoid using relative paths in imports
+import * as moduleAlias from 'module-alias';
+moduleAlias.addAlias('@local', __dirname);
+
 import * as express from 'express';
 import * as cors from 'cors';
 import { getAppConfig } from './config';

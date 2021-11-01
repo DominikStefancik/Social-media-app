@@ -1,2 +1,2 @@
-# Social-media-app
-A simple social media app developed with Node, Typescript, Mongo and React
+# Social Media App
+A simple social media app developed with Node, Typescript, Graphql, Mongo and React
