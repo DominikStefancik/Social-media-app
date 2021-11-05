@@ -27,7 +27,8 @@
     "fix": "gts fix",
     "prepare": "yarn run compile",
     "pretest": "yarn run compile",
-    "posttest": "yarn run lint"
+    "posttest": "yarn run lint",
+    "prettify": "prettier --write \"./src/**/*.{js,ts,json}\""
   },
   "dependencies": {
     "@typegoose/typegoose": "^9.1.0",

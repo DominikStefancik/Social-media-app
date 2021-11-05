@@ -7,11 +7,29 @@
   ],
   "scripts": {
     "start": "lerna run start",
-    "rebuild": "lerna run rebuild"
+    "rebuild": "lerna run rebuild",
+    "clean": "lerna clean -y",
+    "lint": "lerna run lint",
+    "prettify": "lerna run prettify"
   },
   "devDependencies": {
+    "husky": "4",
     "lerna": "^4.0.0",
+    "lint-staged": "^11.2.6",
     "prettier": "^2.4.1",
     "typescript": "^4.4.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{js,jsx,ts,tsx,json,mdl}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
