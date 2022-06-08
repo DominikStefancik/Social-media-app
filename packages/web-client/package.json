@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "start": "webpack serve --config webpack.config.js --port 3001",
+    "clean": "rm -r dist",
     "rebuild": "yarn run compile",
     "lint": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx}\"",
     "compile": "tsc -p .",
     "prettify": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json}\""
   },
   "dependencies": {
+    "@apollo/client": "^3.6.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
