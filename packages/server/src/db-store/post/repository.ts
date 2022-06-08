@@ -2,12 +2,16 @@ import { v4 as uuid } from 'uuid';
 import { mongoose } from '@typegoose/typegoose';
 import * as pino from 'pino';
 import { omitBy, isUndefined } from 'lodash';
-import { Post } from '@local/db-store/post/model';
+import { Post, PostModel } from '@local/db-store/post/model';
 import { PostFilter, PostSelector } from '@local/graphql/types/post';
 import { CommentSelector } from '@local/graphql/types/comment';
 
 export class PostRepository {
-  constructor(private readonly model: mongoose.Model<Post>, private readonly logger: pino.Logger) {}
+  private readonly model: mongoose.Model<Post>;
+
+  constructor(private readonly logger: pino.Logger) {
+    this.model = PostModel;
+  }
 
   public async createPost(authorId: string, text: string): Promise<Post> {
     const data = {

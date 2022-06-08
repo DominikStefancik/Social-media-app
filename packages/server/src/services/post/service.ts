@@ -1,7 +1,7 @@
 import * as pino from 'pino';
 import { isEmpty } from 'lodash';
 import { PostRepository } from '@local/db-store/post/repository';
-import { Post, PostModel } from '@local/db-store/post/model';
+import { Post } from '@local/db-store/post/model';
 import { CreatePostData, PostFilter, PostSelector } from '@local/graphql/types/post';
 import { User } from '@local/db-store/user/model';
 import { CommentSelector, CreateCommentData } from '@local/graphql/types/comment';
@@ -15,7 +15,7 @@ export class PostService {
   private readonly repository: PostRepository;
 
   constructor(private readonly logger: pino.Logger) {
-    this.repository = new PostRepository(PostModel, logger);
+    this.repository = new PostRepository(logger);
     this.logger.info('PostService successfully created.');
   }
 

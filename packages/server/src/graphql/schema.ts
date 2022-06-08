@@ -37,7 +37,7 @@ export const schema = gql`
 
   type Post {
     id: ID!
-    author: User!
+    author: User
     text: String!
     createdAt: Date!
     lastUpdated: Date

@@ -4,7 +4,7 @@ import { hash, compare } from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash';
 import { UserRepository } from '@local/db-store/user/repository';
-import { User, UserModel } from '@local/db-store/user/model';
+import { User } from '@local/db-store/user/model';
 import { getAppConfig } from '@local/config';
 import { CreateUserData, LoginUserData, UserFilter, UserSelector } from '@local/graphql/types/user';
 import {
@@ -20,7 +20,7 @@ export class UserService {
   private readonly repository: UserRepository;
 
   constructor(private readonly logger: pino.Logger) {
-    this.repository = new UserRepository(UserModel, logger);
+    this.repository = new UserRepository(logger);
     this.logger.info('UserService successfully created.');
   }
 

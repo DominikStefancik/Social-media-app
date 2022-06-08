@@ -2,11 +2,15 @@ import { v4 as uuid } from 'uuid';
 import { mongoose } from '@typegoose/typegoose';
 import * as pino from 'pino';
 import { isUndefined, omitBy } from 'lodash';
-import { User } from '@local/db-store/user/model';
+import { User, UserModel } from '@local/db-store/user/model';
 import { UserFilter, UserSelector } from '@local/graphql/types/user';
 
 export class UserRepository {
-  constructor(private readonly model: mongoose.Model<User>, private readonly logger: pino.Logger) {}
+  private readonly model: mongoose.Model<User>;
+
+  constructor(private readonly logger: pino.Logger) {
+    this.model = UserModel;
+  }
 
   public async createUser(username: string, password: string, email: string): Promise<User> {
     const data = {
