@@ -23,7 +23,7 @@ export class PostService {
     const { text } = data;
 
     if (text.trim() === '') {
-      throw new InputError('Text must not be empty');
+      throw new InputError('text', 'Text must not be empty');
     }
 
     return this.repository.createPost(user.id, text);
@@ -33,7 +33,7 @@ export class PostService {
     const post = await this.getPost(selector);
 
     if (!post) {
-      throw new InputError(`The post (id=${selector.id}) doesn't exist`);
+      throw new InputError('postId', `The post (id=${selector.id}) doesn't exist`);
     }
 
     if (post.authorId !== user.id) {
@@ -67,13 +67,14 @@ export class PostService {
     const errors = validateCreateCommentData(data);
 
     if (!isEmpty(errors)) {
-      throw new InputError(Object.values(errors)[0] as string);
+      const input = Object.keys(errors)[0] as string;
+      throw new InputError(input, errors[input]);
     }
 
     const post = await this.getPost({ id: postId });
 
     if (!post) {
-      throw new InputError(`The post (id=${postId}) doesn't exist`);
+      throw new InputError('postId', `The post (id=${postId}) doesn't exist`);
     }
 
     return this.repository.createComment(postId, user.id, text);
@@ -84,19 +85,21 @@ export class PostService {
     const errors = validateCommentSelector(selector);
 
     if (!isEmpty(errors)) {
-      throw new InputError(Object.values(errors)[0] as string);
+      const input = Object.keys(errors)[0] as string;
+      throw new InputError(input, errors[input]);
     }
 
     const post = await this.getPost({ id: postId });
 
     if (!post) {
-      throw new InputError(`The post (id=${postId}) doesn't exist`);
+      throw new InputError('postId', `The post (id=${postId}) doesn't exist`);
     }
 
     const comment = post.comments.find((comment) => comment.id === commentId);
 
     if (!comment) {
       throw new InputError(
+        'commentId',
         `The comment (id=${commentId}) in the post (id=${postId}) doesn't exist`
       );
     }
@@ -115,11 +118,11 @@ export class PostService {
     const post = await this.getPost({ id });
 
     if (id.trim() === '') {
-      throw new InputError('Id must not be empty');
+      throw new InputError('postId', 'the id of a post must not be empty');
     }
 
     if (!post) {
-      throw new InputError(`The post (id=${id}) doesn't exist`);
+      throw new InputError('postId', `The post (id=${id}) doesn't exist`);
     }
 
     return this.repository.likePost(selector, user.id);

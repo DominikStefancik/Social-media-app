@@ -13,20 +13,20 @@ export const validateCreateUserData = (data: CreateUserData): InputValidationErr
     errors.username = 'Username must not be empty';
   }
 
-  if (password.trim() === '') {
-    errors.password = 'Password must not be empty';
-  } else if (password !== confirmedPassword) {
-    errors.password = 'Confirmed password has to be exactly the same as password';
-  }
-
   if (email.trim() === '') {
-    errors.username = 'Email must not be empty';
+    errors.email = 'Email must not be empty';
   } else {
     const emailRegex =
       /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
     if (!email.match(emailRegex)) {
       errors.email = 'Email must be a valid email address';
     }
+  }
+
+  if (password.trim() === '') {
+    errors.password = 'Password must not be empty';
+  } else if (password !== confirmedPassword) {
+    errors.confirmedPassword = 'Confirmed password has to be exactly the same as password';
   }
 
   return errors;

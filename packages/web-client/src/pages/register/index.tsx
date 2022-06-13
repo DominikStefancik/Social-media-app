@@ -1,12 +1,14 @@
-import React, { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import React, { FormEvent, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
+  Alert,
+  AlertTitle,
   Avatar,
   Box,
   Button,
+  CircularProgress,
   CssBaseline,
   Grid,
-  Link as MuiLink,
   Paper,
   TextField,
   Typography,
@@ -14,13 +16,50 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Copyright from '../../components/Copyright';
-import { WEB_CLIENT_HOME, WEB_CLIENT_LOGIN } from '../urls';
+import { WEB_CLIENT_ROOT, WEB_CLIENT_LOGIN, WEB_CLIENT_HOME } from '../urls';
+import { ApolloError, useMutation } from '@apollo/client';
+import { CREATE_USER_MUTATION } from '../mutations';
+import { FormInputName, FormLinkProps } from '../types';
 
 const theme = createTheme();
 
 const Register = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmedPassword, setConfirmedPassword] = useState('');
+  const [error, setError] = useState('');
+  const [invalidInput, setInvalidInput] = useState('');
+  const navigate = useNavigate();
+
+  const [createUser, { loading }] = useMutation(CREATE_USER_MUTATION, {
+    variables: {
+      username,
+      email,
+      password,
+      confirmedPassword,
+    },
+    // the update function will be run after the the mutation successfully finishes
+    update(_, result) {
+      setUsername('');
+      setEmail('');
+      setPassword('');
+      setConfirmedPassword('');
+      setInvalidInput('');
+      setError('');
+      navigate(WEB_CLIENT_HOME, { replace: true });
+    },
+    onError(error: ApolloError) {
+      const inputs = error.graphQLErrors[0].extensions.inputs as Object;
+      const input = inputs ? Object.values(inputs)[0] : '';
+      setInvalidInput(input);
+      setError(error.message);
+    },
+  });
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    createUser();
   };
 
   return (
@@ -58,6 +97,12 @@ const Register = () => {
               Sign up
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+              {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  <AlertTitle>Error</AlertTitle>
+                  {error}
+                </Alert>
+              )}
               <TextField
                 autoComplete="given-name"
                 name="username"
@@ -66,6 +111,9 @@ const Register = () => {
                 id="username"
                 label="Username"
                 autoFocus
+                value={username}
+                error={invalidInput === FormInputName.USERNAME}
+                onChange={(event) => setUsername(event.target.value)}
               />
               <TextField
                 margin="normal"
@@ -74,7 +122,9 @@ const Register = () => {
                 id="email"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
+                value={email}
+                error={invalidInput === FormInputName.EMAIL}
+                onChange={(event) => setEmail(event.target.value)}
               />
               <TextField
                 margin="normal"
@@ -84,25 +134,40 @@ const Register = () => {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="new-password"
+                value={password}
+                error={invalidInput === FormInputName.PASSWORD}
+                onChange={(event) => setPassword(event.target.value)}
               />
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                name="confirmPassword"
+                name="confirmedPassword"
                 label="Confirm Password"
                 type="password"
-                id="confirmPassword"
-                autoComplete="confirm-password"
+                id="confirmedPassword"
+                value={confirmedPassword}
+                error={invalidInput === FormInputName.CONFIRMED_PASSWORD}
+                onChange={(event) => setConfirmedPassword(event.target.value)}
               />
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+              {loading && (
+                <Box sx={{ mt: 1, display: 'flex', justifyContent: 'center' }}>
+                  <CircularProgress size={35} sx={{ mt: 1 }} />
+                </Box>
+              )}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={loading}
+              >
                 Sign Up
               </Button>
-              <Grid container>
+              <Grid container sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Grid item>
-                  <Link to={`${WEB_CLIENT_HOME}${WEB_CLIENT_LOGIN}`}>
-                    <MuiLink variant="body2">Already have an account? Sign in</MuiLink>
+                  <Link to={`${WEB_CLIENT_ROOT}${WEB_CLIENT_LOGIN}`} style={{ ...FormLinkProps }}>
+                    Already have an account? Sign in
                   </Link>
                 </Grid>
               </Grid>

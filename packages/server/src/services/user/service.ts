@@ -30,7 +30,8 @@ export class UserService {
     const errors = validateCreateUserData(data);
 
     if (!isEmpty(errors)) {
-      throw new InputError(Object.values(errors)[0] as string);
+      const input = Object.keys(errors)[0] as string;
+      throw new InputError(input, errors[input]);
     }
 
     if (await this.getUser({ username })) {
@@ -50,18 +51,19 @@ export class UserService {
     const errors = validateUserLoginData(data);
 
     if (!isEmpty(errors)) {
-      throw new InputError(Object.values(errors)[0] as string);
+      const input = Object.keys(errors)[0] as string;
+      throw new InputError(input, errors[input]);
     }
 
     const user: UserWithToken | null = await this.getUser({ username });
 
     if (!user) {
-      throw new InputError(`User with the username ${username} doesn't exist.`);
+      throw new InputError('username', `User with the username ${username} doesn't exist.`);
     }
 
     const isValidPassword = await compare(password, user.password);
     if (!isValidPassword) {
-      throw new InputError('Password is incorrect');
+      throw new InputError('password', 'Password is incorrect');
     }
 
     user.token = this.generateJwtToken(user);

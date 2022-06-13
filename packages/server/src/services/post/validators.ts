@@ -25,7 +25,7 @@ export const validateCommentSelector = (selector: CommentSelector): InputValidat
   }
 
   if (commentId.trim() === '') {
-    errors.text = 'CommentId must not be empty';
+    errors.commentId = 'CommentId must not be empty';
   }
 
   return errors;

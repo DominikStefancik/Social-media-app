@@ -7,21 +7,23 @@ import Logout from './pages/logout';
 import NotFound from './pages/not-found';
 import Register from './pages/register';
 import {
-  WEB_CLIENT_HOME,
+  WEB_CLIENT_ROOT,
   WEB_CLIENT_LOGIN,
   WEB_CLIENT_LOGOUT,
   WEB_CLIENT_NOT_FOUND,
   WEB_CLIENT_REGISTER,
+  WEB_CLIENT_HOME,
 } from './pages/urls';
 
 const WebClient = () => {
   return (
     <Routes>
-      <Route path={WEB_CLIENT_HOME} element={<Layout />}>
-        <Route index element={<Home />} />
+      <Route path={WEB_CLIENT_ROOT} element={<Layout />}>
+        <Route path={WEB_CLIENT_HOME} element={<Home />} />
         <Route path={WEB_CLIENT_LOGIN} element={<Login />} />
         <Route path={WEB_CLIENT_LOGOUT} element={<Logout />} />
         <Route path={WEB_CLIENT_REGISTER} element={<Register />} />
+        <Route index element={<Login />} />
 
         <Route path={WEB_CLIENT_NOT_FOUND} element={<NotFound />} />
         <Route path="*" element={<Navigate to={WEB_CLIENT_NOT_FOUND} replace />} />

@@ -1,12 +1,14 @@
-import React, { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import React, { FormEvent, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
+  Alert,
+  AlertTitle,
   Avatar,
   Box,
   Button,
+  CircularProgress,
   CssBaseline,
   Grid,
-  Link as MuiLink,
   Paper,
   TextField,
   Typography,
@@ -14,13 +16,44 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Copyright from '../../components/Copyright';
-import { WEB_CLIENT_HOME, WEB_CLIENT_REGISTER } from '../urls';
+import { WEB_CLIENT_ROOT, WEB_CLIENT_REGISTER, WEB_CLIENT_HOME } from '../urls';
+import { ApolloError, useMutation } from '@apollo/client';
+import { FormInputName, FormLinkProps } from '../types';
+import { LOGIN_USER_MUTATION } from '../mutations';
 
 const theme = createTheme();
 
 const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [invalidInput, setInvalidInput] = useState('');
+  const navigate = useNavigate();
+
+  const [loginUser, { loading }] = useMutation(LOGIN_USER_MUTATION, {
+    variables: {
+      username,
+      password,
+    },
+    // the update function will be run after the the mutation successfully finishes
+    update(_, result) {
+      setUsername('');
+      setPassword('');
+      setInvalidInput('');
+      setError('');
+      navigate(WEB_CLIENT_HOME, { replace: true });
+    },
+    onError(error: ApolloError) {
+      const inputs = error.graphQLErrors[0].extensions.inputs as Object;
+      const input = inputs ? Object.values(inputs)[0] : '';
+      setInvalidInput(input);
+      setError(error.message);
+    },
+  });
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    loginUser();
   };
 
   return (
@@ -58,15 +91,23 @@ const Login = () => {
               Sign in
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+              {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  <AlertTitle>Error</AlertTitle>
+                  {error}
+                </Alert>
+              )}
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="username"
+                label="Username"
+                name="username"
                 autoFocus
+                value={username}
+                error={invalidInput === FormInputName.USERNAME}
+                onChange={(event) => setUsername(event.target.value)}
               />
               <TextField
                 margin="normal"
@@ -76,20 +117,36 @@ const Login = () => {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
+                value={password}
+                error={invalidInput === FormInputName.PASSWORD}
+                onChange={(event) => setPassword(event.target.value)}
               />
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+              {loading && (
+                <Box sx={{ mt: 1, display: 'flex', justifyContent: 'center' }}>
+                  <CircularProgress size={35} sx={{ mt: 1 }} />
+                </Box>
+              )}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={loading}
+              >
                 Sign In
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link to="#">
-                    <MuiLink variant="body2">Forgot password?</MuiLink>
+                  <Link to="#" style={{ ...FormLinkProps }}>
+                    Forgot password?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link to={`${WEB_CLIENT_HOME}${WEB_CLIENT_REGISTER}`}>
-                    <MuiLink variant="body2">Don't have an account? Sign Up</MuiLink>
+                  <Link
+                    to={`${WEB_CLIENT_ROOT}${WEB_CLIENT_REGISTER}`}
+                    style={{ ...FormLinkProps }}
+                  >
+                    Don't have an account? Sign Up
                   </Link>
                 </Grid>
               </Grid>

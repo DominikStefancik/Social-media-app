@@ -11,7 +11,10 @@ export const userMutationsResolvers = {
     try {
       return await userService.createUser(args.data);
     } catch (error: any) {
-      throw new UserInputError(error.message, { errors: { [error.name]: error.message } });
+      throw new UserInputError(error.message, {
+        errors: { [error.name]: error.message },
+        inputs: { [error.input]: error.input },
+      });
     }
   },
 
@@ -23,7 +26,10 @@ export const userMutationsResolvers = {
     try {
       return await userService.loginUser(args.data);
     } catch (error: any) {
-      throw new UserInputError(error.message, { errors: { [error.name]: error.message } });
+      throw new UserInputError(error.message, {
+        errors: { [error.name]: error.message },
+        inputs: { [error.input]: error.input },
+      });
     }
   },
 

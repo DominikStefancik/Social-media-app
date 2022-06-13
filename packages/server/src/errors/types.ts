@@ -15,8 +15,11 @@ export class UserAuthorisationError extends Error {
 }
 
 export class InputError extends Error {
-  constructor(message: string) {
+  input: string;
+
+  constructor(input: string, message: string) {
     super(message);
     this.name = 'InputError';
+    this.input = input;
   }
 }
