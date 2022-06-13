@@ -6,7 +6,7 @@ const Layout = () => {
   // the Outlet component represents all components nested in the Container component
   return (
     <div>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Outlet />
       </Container>
     </div>
