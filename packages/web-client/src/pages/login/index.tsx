@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Alert,
@@ -20,6 +20,7 @@ import { WEB_CLIENT_ROOT, WEB_CLIENT_REGISTER, WEB_CLIENT_HOME } from '../urls';
 import { ApolloError, useMutation } from '@apollo/client';
 import { FormInputName, FormLinkProps } from '../types';
 import { LOGIN_USER_MUTATION } from '../mutations';
+import { AuthContext } from '../../context/AuthProvider';
 
 const theme = createTheme();
 
@@ -28,6 +29,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [invalidInput, setInvalidInput] = useState('');
+  const authContext = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [loginUser, { loading }] = useMutation(LOGIN_USER_MUTATION, {
@@ -41,6 +43,9 @@ const Login = () => {
       setPassword('');
       setInvalidInput('');
       setError('');
+
+      // after a user successfully logs in, we need to update the authContext to set the user's data
+      authContext.authenticateUser(result.data.loginUser);
       navigate(WEB_CLIENT_HOME, { replace: true });
     },
     onError(error: ApolloError) {

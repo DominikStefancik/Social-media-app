@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Alert,
@@ -20,6 +20,7 @@ import { WEB_CLIENT_ROOT, WEB_CLIENT_LOGIN, WEB_CLIENT_HOME } from '../urls';
 import { ApolloError, useMutation } from '@apollo/client';
 import { CREATE_USER_MUTATION } from '../mutations';
 import { FormInputName, FormLinkProps } from '../types';
+import { AuthContext } from '../../context/AuthProvider';
 
 const theme = createTheme();
 
@@ -30,6 +31,7 @@ const Register = () => {
   const [confirmedPassword, setConfirmedPassword] = useState('');
   const [error, setError] = useState('');
   const [invalidInput, setInvalidInput] = useState('');
+  const authContext = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [createUser, { loading }] = useMutation(CREATE_USER_MUTATION, {
@@ -47,7 +49,10 @@ const Register = () => {
       setConfirmedPassword('');
       setInvalidInput('');
       setError('');
-      navigate(WEB_CLIENT_HOME, { replace: true });
+
+      // after a user successfully registers, we need to update the authContext to set the user's data
+      authContext.authenticateUser(result.data.createUser);
+      navigate(`${WEB_CLIENT_ROOT}${WEB_CLIENT_HOME}`, { replace: true });
     },
     onError(error: ApolloError) {
       const inputs = error.graphQLErrors[0].extensions.inputs as Object;

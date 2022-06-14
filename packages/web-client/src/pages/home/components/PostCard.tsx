@@ -4,7 +4,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ForumIcon from '@mui/icons-material/Forum';
 import { DateTime } from 'luxon';
 
-import { Post } from '../types';
+import { Post } from '../../../types';
 
 const TEXT_MAX_LENGTH = 50;
 

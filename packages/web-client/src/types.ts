@@ -7,6 +7,10 @@ export type User = {
   lastUpdated?: string;
 };
 
+export type AuthenticatedUser = Omit<User, 'password' | 'createdAt' | 'lastUpdated'> & {
+  token: string;
+};
+
 export type Post = {
   id: string;
   author: User | null;
