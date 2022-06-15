@@ -8,6 +8,7 @@ import { POSTS_QUERY } from '../queries';
 import ApplicationBar from '../../components/application-bar/ApplicationBar';
 import { Post } from '../../types';
 import PostCard from './components/PostCard';
+import PostForm from './components/PostForm';
 
 // @ts-ignore
 const Item = styled(Paper)(({ theme }) => ({
@@ -26,7 +27,10 @@ const Home = () => {
       <ApplicationBar />
       <Grid container spacing={1} rowSpacing={2}>
         <Grid container item columns={{ xs: 1, sm: 1, md: 1 }}>
-          <Grid item xs={2} sm={4} md={4} key={0} style={{ textAlign: 'center' }}>
+          <Grid item xs={2} sm={4} md={4} key={0}>
+            <PostForm />
+          </Grid>
+          <Grid item xs={2} sm={4} md={4} key={1} sx={{ textAlign: 'center' }}>
             <h1>Recent Posts</h1>
           </Grid>
         </Grid>

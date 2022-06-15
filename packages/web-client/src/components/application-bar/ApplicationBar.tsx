@@ -97,7 +97,7 @@ const ApplicationBar = () => {
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>
-                MenuItemLabel.LOGOUT
+                {MenuItemLabel.LOGOUT}
               </MenuItem>
             </Menu>
           </Box>
