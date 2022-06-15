@@ -58,3 +58,12 @@ export const CREATE_POST_MUTATION = gql`
     }
   }
 `;
+
+export const LIKE_POST_MUTATION = gql`
+  mutation LikePost($id: ID!) {
+    likePost(selector: { id: $id }) {
+      id
+      likes
+    }
+  }
+`;

@@ -1,5 +1,5 @@
 import { ApolloError, useMutation } from '@apollo/client';
-import { Box, Button, Grid, TextField } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, Grid, TextField } from '@mui/material';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import React, { FormEvent, useState } from 'react';
 import { CREATE_POST_MUTATION } from '../../mutations';
@@ -27,8 +27,9 @@ const PostForm = () => {
         },
       });
 
-      // reset the in
+      // reset the input and errors
       setText('');
+      setError('');
     },
     onError(error: ApolloError) {
       setError(error.message);
@@ -65,6 +66,12 @@ const PostForm = () => {
             onChange={(event) => setText(event.target.value)}
             sx={{ width: '77%' }}
           />
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              <AlertTitle>Error</AlertTitle>
+              {error}
+            </Alert>
+          )}
           <Button
             type="submit"
             size="large"

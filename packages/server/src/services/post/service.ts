@@ -26,7 +26,7 @@ export class PostService {
       throw new InputError('text', 'Text must not be empty');
     }
 
-    return this.repository.createPost(user.id, text);
+    return this.repository.createPost(user, text);
   }
 
   public async deletePost(user: User, selector: PostSelector): Promise<boolean> {
@@ -40,7 +40,7 @@ export class PostService {
       throw new UserAuthorisationError('User is not an author of the post.');
     }
 
-    return this.repository.deletePost(selector);
+    return this.repository.deletePost(user, selector);
   }
 
   public async deletePosts(user: User, filter: PostFilter): Promise<boolean> {
@@ -77,7 +77,7 @@ export class PostService {
       throw new InputError('postId', `The post (id=${postId}) doesn't exist`);
     }
 
-    return this.repository.createComment(postId, user.id, text);
+    return this.repository.createComment(user, postId, text);
   }
 
   public async deleteComment(user: User, selector: CommentSelector): Promise<Post> {
@@ -110,7 +110,7 @@ export class PostService {
       );
     }
 
-    return this.repository.deleteComment(selector);
+    return this.repository.deleteComment(user, selector);
   }
 
   public async likePost(user: User, selector: PostSelector): Promise<Post> {
@@ -118,13 +118,13 @@ export class PostService {
     const post = await this.getPost({ id });
 
     if (id.trim() === '') {
-      throw new InputError('postId', 'the id of a post must not be empty');
+      throw new InputError('postId', 'The id of a post must not be empty');
     }
 
     if (!post) {
       throw new InputError('postId', `The post (id=${id}) doesn't exist`);
     }
 
-    return this.repository.likePost(selector, user.id);
+    return this.repository.likePost(user, selector);
   }
 }

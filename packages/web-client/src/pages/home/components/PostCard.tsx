@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ForumIcon from '@mui/icons-material/Forum';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { DateTime } from 'luxon';
 
 import { Post } from '../../../types';
+import { AuthContext } from '../../../context/AuthProvider';
+import LikeButton from './LikeButton';
 
 const TEXT_MAX_LENGTH = 50;
 
@@ -36,14 +39,16 @@ const getPostDuration = (date: string): string => {
 };
 
 const PostCard = ({ post }: PostCardProps) => {
-  const { text, createdAt, author, likes } = post;
+  const { user } = useContext(AuthContext);
 
-  const handleLikeButtonClick = () => {
-    console.log('Like Button Clicked');
-  };
+  const { id, text, createdAt, author, likes, comments } = post;
 
   const handleCommentButtonClick = () => {
     console.log('Comment Button Clicked');
+  };
+
+  const handleDeleteButtonClick = () => {
+    console.log('Delete Button Clicked');
   };
 
   return (
@@ -63,17 +68,21 @@ const PostCard = ({ post }: PostCardProps) => {
         <Button size="small">Read Post</Button>
       </CardActions>
       <CardActions>
-        <Button
-          variant="outlined"
-          color="error"
-          startIcon={<FavoriteIcon />}
-          onClick={handleLikeButtonClick}
-        >
-          {likes.length}
-        </Button>
+        <LikeButton postId={id} likes={likes} />
         <Button variant="outlined" startIcon={<ForumIcon />} onClick={handleCommentButtonClick}>
-          Comment
+          {comments.length}
         </Button>
+        {user && user.username === author?.username && (
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteButtonClick}
+            sx={{ pr: '0px', align: 'right' }}
+          >
+            &nbsp;
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

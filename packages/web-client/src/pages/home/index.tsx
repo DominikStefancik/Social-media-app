@@ -1,9 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { styled } from '@mui/material/styles';
-
 import { CircularProgress, Grid, Paper } from '@mui/material';
-
 import { POSTS_QUERY } from '../queries';
 import ApplicationBar from '../../components/application-bar/ApplicationBar';
 import { Post } from '../../types';
