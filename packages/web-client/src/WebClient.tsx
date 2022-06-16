@@ -1,11 +1,12 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Layout from './components/layout/Layout';
-import Home from './pages/home';
-import Login from './pages/login';
+import Layout from './pages/components/Layout';
+import HomePage from './pages/home';
+import LoginPage from './pages/login';
 import Logout from './pages/logout';
-import NotFound from './pages/not-found';
-import Register from './pages/register';
+import NotFoundPage from './pages/not-found';
+import PostPage from './pages/post';
+import RegisterPage from './pages/register';
 import {
   WEB_CLIENT_ROOT,
   WEB_CLIENT_LOGIN,
@@ -13,19 +14,23 @@ import {
   WEB_CLIENT_NOT_FOUND,
   WEB_CLIENT_REGISTER,
   WEB_CLIENT_HOME,
+  WEB_CLIENT_POST,
 } from './pages/urls';
 
 const WebClient = () => {
   return (
     <Routes>
       <Route path={WEB_CLIENT_ROOT} element={<Layout />}>
-        <Route path={WEB_CLIENT_HOME} element={<Home />} />
-        <Route path={WEB_CLIENT_LOGIN} element={<Login />} />
+        <Route index element={<LoginPage />} />
+        <Route path={WEB_CLIENT_LOGIN} element={<LoginPage />} />
         <Route path={WEB_CLIENT_LOGOUT} element={<Logout />} />
-        <Route path={WEB_CLIENT_REGISTER} element={<Register />} />
-        <Route index element={<Login />} />
+        <Route path={WEB_CLIENT_REGISTER} element={<RegisterPage />} />
+        <Route path={WEB_CLIENT_HOME} element={<HomePage />} />
+        <Route path={WEB_CLIENT_POST}>
+          <Route path=":postId" element={<PostPage />} />
+        </Route>
 
-        <Route path={WEB_CLIENT_NOT_FOUND} element={<NotFound />} />
+        <Route path={WEB_CLIENT_NOT_FOUND} element={<NotFoundPage />} />
         <Route path="*" element={<Navigate to={WEB_CLIENT_NOT_FOUND} replace />} />
       </Route>
     </Routes>

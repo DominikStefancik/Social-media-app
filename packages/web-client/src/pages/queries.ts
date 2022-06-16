@@ -24,3 +24,28 @@ export const POSTS_QUERY = gql`
     }
   }
 `;
+
+export const POST_QUERY = gql`
+  query Post($id: ID) {
+    post(selector: { id: $id }) {
+      id
+      text
+      createdAt
+      lastUpdated
+      author {
+        id
+        username
+      }
+      comments {
+        id
+        text
+        createdAt
+        author {
+          id
+          username
+        }
+      }
+      likes
+    }
+  }
+`;

@@ -37,7 +37,20 @@ export default (rootElement: ApolloProviderProps) => {
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            // this says that whenever we update the Apollo cache for the query "posts", use the updated data (e.g. after deletion of a post)
+            posts: {
+              merge: (existing, incoming) => {
+                return incoming;
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 
   return <ApolloProvider client={client}>{rootElement.children}</ApolloProvider>;

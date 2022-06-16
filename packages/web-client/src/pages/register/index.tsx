@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Copyright from '../../components/Copyright';
+import Copyright from '../components/Copyright';
 import { WEB_CLIENT_ROOT, WEB_CLIENT_LOGIN, WEB_CLIENT_HOME } from '../urls';
 import { ApolloError, useMutation } from '@apollo/client';
 import { CREATE_USER_MUTATION } from '../mutations';
@@ -24,7 +24,7 @@ import { AuthContext } from '../../context/AuthProvider';
 
 const theme = createTheme();
 
-const Register = () => {
+const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -185,4 +185,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterPage;

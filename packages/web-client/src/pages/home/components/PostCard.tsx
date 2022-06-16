@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { Button, Card, CardActions, CardContent, Typography } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import ForumIcon from '@mui/icons-material/Forum';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { DateTime } from 'luxon';
-
 import { Post } from '../../../types';
 import { AuthContext } from '../../../context/AuthProvider';
-import LikeButton from './LikeButton';
+import LikePost from '../../components/LikePost';
+import { Link } from 'react-router-dom';
+import { WEB_CLIENT_POST, WEB_CLIENT_ROOT } from '../../urls';
+import DeletePost from '../../components/DeletePost';
+import { getPostDuration } from '../../helpers';
 
 const TEXT_MAX_LENGTH = 50;
 
@@ -15,40 +15,13 @@ interface PostCardProps {
   post: Post;
 }
 
-const getPostDuration = (date: string): string => {
-  const dateTime = DateTime.fromISO(date);
-  const duration = DateTime.now().diff(dateTime, ['years', 'months', 'days', 'hours', 'minutes']);
-  const minutes = Math.floor(duration.minutes);
-  let durationString;
-
-  if (duration.years > 0) {
-    durationString = `${duration.years} year${duration.years > 1 ? 's' : ''} ago`;
-  } else if (duration.months > 0) {
-    durationString = `${duration.months} month${duration.months > 1 ? 's' : ''} ago`;
-  } else if (duration.days > 0) {
-    durationString = `${duration.days} day${duration.days > 1 ? 's' : ''} ago`;
-  } else if (duration.hours > 0) {
-    durationString = `${duration.hours} hour${duration.hours > 1 ? 's' : ''} ago`;
-  } else if (minutes > 0) {
-    durationString = `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-  } else {
-    durationString = 'Less than a minute ago';
-  }
-
-  return durationString;
-};
-
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useContext(AuthContext);
 
-  const { id, text, createdAt, author, likes, comments } = post;
+  const { id: postId, text, createdAt, author, likes, comments } = post;
 
   const handleCommentButtonClick = () => {
     console.log('Comment Button Clicked');
-  };
-
-  const handleDeleteButtonClick = () => {
-    console.log('Delete Button Clicked');
   };
 
   return (
@@ -65,24 +38,23 @@ const PostCard = ({ post }: PostCardProps) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Read Post</Button>
+        <Link to={`${WEB_CLIENT_ROOT}${WEB_CLIENT_POST}/${postId}`}>
+          <Button size="small">Read Post</Button>
+        </Link>
       </CardActions>
       <CardActions>
-        <LikeButton postId={id} likes={likes} />
-        <Button variant="outlined" startIcon={<ForumIcon />} onClick={handleCommentButtonClick}>
-          {comments.length}
-        </Button>
-        {user && user.username === author?.username && (
+        <LikePost postId={postId} likes={likes} />
+        <Link to={`${WEB_CLIENT_ROOT}${WEB_CLIENT_POST}/${postId}`}>
           <Button
             variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={handleDeleteButtonClick}
-            sx={{ pr: '0px', align: 'right' }}
+            startIcon={<ForumIcon />}
+            onClick={handleCommentButtonClick}
+            sx={{ ml: 1 }}
           >
-            &nbsp;
+            {comments.length}
           </Button>
-        )}
+        </Link>
+        {user && user.username === author?.username && <DeletePost postId={postId} />}
       </CardActions>
     </Card>
   );

@@ -1,23 +1,13 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { styled } from '@mui/material/styles';
-import { CircularProgress, Grid, Paper } from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
 import { POSTS_QUERY } from '../queries';
-import ApplicationBar from '../../components/application-bar/ApplicationBar';
+import ApplicationBar from '../components/application-bar/ApplicationBar';
 import { Post } from '../../types';
 import PostCard from './components/PostCard';
 import PostForm from './components/PostForm';
 
-// @ts-ignore
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
-const Home = () => {
+const HomePage = () => {
   const { loading, data } = useQuery(POSTS_QUERY);
 
   return (
@@ -51,4 +41,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

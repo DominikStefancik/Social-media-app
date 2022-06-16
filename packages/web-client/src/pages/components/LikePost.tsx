@@ -2,15 +2,15 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { Button } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { AuthContext } from '../../../context/AuthProvider';
-import { LIKE_POST_MUTATION } from '../../mutations';
+import { AuthContext } from '../../context/AuthProvider';
+import { LIKE_POST_MUTATION } from '../mutations';
 
-interface LikeButtonProps {
+interface LikePostProps {
   postId: string;
   likes: string[];
 }
 
-const LikeButton = ({ postId, likes }: LikeButtonProps) => {
+const LikePost = ({ postId, likes }: LikePostProps) => {
   const { user } = useContext(AuthContext);
   const [isLiked, setIsLiked] = useState(false);
 
@@ -27,7 +27,7 @@ const LikeButton = ({ postId, likes }: LikeButtonProps) => {
     // the Apollo updates automatically all the post's fields we specified as a return value
   });
 
-  const handleLikeButtonClick = () => {
+  const handleClick = () => {
     likePost();
   };
 
@@ -36,11 +36,11 @@ const LikeButton = ({ postId, likes }: LikeButtonProps) => {
       variant={isLiked ? 'contained' : 'outlined'}
       color="secondary"
       startIcon={<FavoriteIcon />}
-      onClick={handleLikeButtonClick}
+      onClick={handleClick}
     >
       {likes.length}
     </Button>
   );
 };
 
-export default LikeButton;
+export default LikePost;
