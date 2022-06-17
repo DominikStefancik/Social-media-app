@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-export const getPostDuration = (date: string): string => {
+export const getDurationAsText = (date: string): string => {
   const dateTime = DateTime.fromISO(date);
   const duration = DateTime.now().diff(dateTime, ['years', 'months', 'days', 'hours', 'minutes']);
   const minutes = Math.floor(duration.minutes);
@@ -21,4 +21,22 @@ export const getPostDuration = (date: string): string => {
   }
 
   return durationString;
+};
+
+export const getLikesTooltip = (likes: string[]): string => {
+  const LIKES_LIMIT = 5;
+  const likesCount = likes.length;
+
+  if (likesCount === 0) {
+    return 'Be the first who liked this post';
+  } else if (likesCount <= LIKES_LIMIT) {
+    return `${likes.join(', ')} liked this post`;
+  } else {
+    const shownLikes = likes.slice(0, LIKES_LIMIT);
+    const difference = likesCount - LIKES_LIMIT;
+
+    return `${shownLikes.join(', ')} and ${difference} other${
+      difference > 1 ? 's' : ''
+    } liked this post`;
+  }
 };

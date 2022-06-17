@@ -9,34 +9,28 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import PostAddIcon from '@mui/icons-material/PostAdd';
+import AddCommentIcon from '@mui/icons-material/AddComment';
 import React, { FormEvent, useState } from 'react';
-import { CREATE_POST_MUTATION } from '../../mutations';
-import { POSTS_QUERY } from '../../queries';
+import { CREATE_COMMENT_MUTATION } from '../../mutations';
 
-const PostForm = () => {
+interface CreateCommentProps {
+  postId: string;
+}
+
+const CommentForm = ({ postId }: CreateCommentProps) => {
   const [text, setText] = useState('');
   const [error, setError] = useState('');
 
   // in order to update the Apollo cache without an error after the mutation is finished,
-  // the mutation 'CREATE_POST_MUTATION' must return the same fields as the query 'POSTS_QUERY'
-  const [createPost, { loading }] = useMutation(CREATE_POST_MUTATION, {
+  // the mutation 'CREATE_COMENT_MUTATION' must return the same fields as the query 'POSTS_QUERY'
+  const [createComment, { loading }] = useMutation(CREATE_COMMENT_MUTATION, {
     variables: {
+      postId,
       text,
     },
     // the update function will be run after the the mutation successfully finishes
-    // it is usually used for updating the Apollo cache
     update(cache, result) {
-      // update Apollo cache with the all posts including the one we have successfully created
-      const data: any = cache.readQuery({ query: POSTS_QUERY });
-      cache.writeQuery({
-        query: POSTS_QUERY,
-        data: {
-          posts: [...data.posts, result.data.createPost],
-        },
-      });
-
-      // reset the input and errors
+      // reset the input and error
       setText('');
       setError('');
     },
@@ -47,7 +41,7 @@ const PostForm = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    createPost();
+    createComment();
   };
 
   return (
@@ -55,14 +49,14 @@ const PostForm = () => {
       <Card sx={{ minWidth: 275 }}>
         <CardContent>
           <Typography variant="h5" component="div" align="center" paragraph>
-            New Post
+            New Comment
           </Typography>
           <TextField
             margin="normal"
             required
-            id="post"
-            label="New Post"
-            name="post"
+            id="comment"
+            label="New Comment"
+            name="comment"
             multiline
             rows={4}
             value={text}
@@ -80,11 +74,11 @@ const PostForm = () => {
             type="submit"
             size="large"
             variant="contained"
-            startIcon={<PostAddIcon />}
+            startIcon={<AddCommentIcon />}
             disabled={loading}
             sx={{ mt: 2 }}
           >
-            Add Post
+            Add Comment
           </Button>
         </CardContent>
       </Card>
@@ -92,4 +86,4 @@ const PostForm = () => {
   );
 };
 
-export default PostForm;
+export default CommentForm;

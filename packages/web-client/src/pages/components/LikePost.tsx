@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { Button } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { AuthContext } from '../../context/AuthProvider';
 import { LIKE_POST_MUTATION } from '../mutations';
+import { getLikesTooltip } from '../helpers';
 
 interface LikePostProps {
   postId: string;
@@ -13,9 +14,11 @@ interface LikePostProps {
 const LikePost = ({ postId, likes }: LikePostProps) => {
   const { user } = useContext(AuthContext);
   const [isLiked, setIsLiked] = useState(false);
+  const [tooltipText, setTooltipText] = useState('');
 
   useEffect(() => {
-    setIsLiked(!!(user && likes.find((like) => like === user.id)));
+    setIsLiked(!!(user && likes.find((like) => like === user.username)));
+    setTooltipText(getLikesTooltip(likes));
   }, [likes]);
 
   const [likePost] = useMutation(LIKE_POST_MUTATION, {
@@ -32,14 +35,16 @@ const LikePost = ({ postId, likes }: LikePostProps) => {
   };
 
   return (
-    <Button
-      variant={isLiked ? 'contained' : 'outlined'}
-      color="secondary"
-      startIcon={<FavoriteIcon />}
-      onClick={handleClick}
-    >
-      {likes.length}
-    </Button>
+    <Tooltip title={tooltipText} arrow>
+      <Button
+        variant={isLiked ? 'contained' : 'outlined'}
+        color="secondary"
+        startIcon={<FavoriteIcon />}
+        onClick={handleClick}
+      >
+        {likes.length}
+      </Button>
+    </Tooltip>
   );
 };
 

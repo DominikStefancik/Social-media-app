@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { CircularProgress, Grid } from '@mui/material';
+import { CircularProgress, Grid, Typography } from '@mui/material';
 import { POSTS_QUERY } from '../queries';
 import ApplicationBar from '../components/application-bar/ApplicationBar';
 import { Post } from '../../types';
@@ -19,7 +19,9 @@ const HomePage = () => {
             <PostForm />
           </Grid>
           <Grid item xs={2} sm={4} md={4} key={1} sx={{ textAlign: 'center' }}>
-            <h1>Recent Posts</h1>
+            <Typography variant="h5" component="div" align="center" paragraph>
+              Recent Posts
+            </Typography>
           </Grid>
         </Grid>
         <Grid container item spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>

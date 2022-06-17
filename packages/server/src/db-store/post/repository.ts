@@ -103,17 +103,17 @@ export class PostRepository {
   }
 
   // This method works like a toggle
-  // If the given user's id is not found in the 'likes' array, that means a user liked a post
+  // If the given user's username is not found in the 'likes' array, that means a user liked a post
   // If, however, it is found in the array, it means a user unliked a post
   public async likePost(user: User, selector: PostSelector): Promise<Post> {
     const { id } = selector;
 
     const post = (await this.getPost({ id }))!;
-    const index = post.likes.findIndex((like) => like === user.id);
+    const index = post.likes.findIndex((like) => like === user.username);
 
     // userId is not found in the array -> user liked a post
     if (index === -1) {
-      post.likes.push(user.id);
+      post.likes.push(user.username);
     } else {
       // otherwise user unliked a post
       post.likes.splice(index, 1);

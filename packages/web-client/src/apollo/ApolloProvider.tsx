@@ -41,8 +41,13 @@ export default (rootElement: ApolloProviderProps) => {
       typePolicies: {
         Query: {
           fields: {
-            // this says that whenever we update the Apollo cache for the query "posts", use the updated data (e.g. after deletion of a post)
             posts: {
+              // this says that whenever we update the Apollo cache for the query "posts", use the updated data (e.g. after deletion of a post)
+              merge: (existing, incoming) => {
+                return incoming;
+              },
+            },
+            comments: {
               merge: (existing, incoming) => {
                 return incoming;
               },

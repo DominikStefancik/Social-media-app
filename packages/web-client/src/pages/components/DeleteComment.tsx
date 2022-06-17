@@ -2,32 +2,25 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { Button, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DELETE_POST_MUTATION } from '../mutations';
-import { POSTS_QUERY } from '../queries';
-import { Post } from '../../types';
+import { DELETE_COMMENT_MUTATION } from '../mutations';
 import ConfirmDialog from './ConfirmDialog';
 
-interface DeletePostProps {
+interface DeleteCommentProps {
   postId: string;
+  commentId: string;
 }
 
-const DeletePost = ({ postId }: DeletePostProps) => {
+const DeleteComment = ({ postId, commentId }: DeleteCommentProps) => {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
-  const [deletePost] = useMutation(DELETE_POST_MUTATION, {
+  const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION, {
     variables: {
-      id: postId,
+      postId,
+      commentId,
     },
-    update: (cache) => {
-      // update Apollo cache after the post has been successfully deleted
-      const data: any = cache.readQuery({ query: POSTS_QUERY });
-      cache.writeQuery({
-        query: POSTS_QUERY,
-        data: {
-          posts: data.posts.filter((post: Post) => post.id !== postId),
-        },
-      });
-    },
+    // Note: We don't need to update the Apollo cache after we have called the "deleteComment" mutation
+    // The reason is that in the mutation we have specified "id" field as a return value and because of this
+    // the Apollo updates automatically all the post's fields we specified as a return value
   });
 
   const handleClick = () => {
@@ -38,13 +31,13 @@ const DeletePost = ({ postId }: DeletePostProps) => {
     setIsConfirmDialogOpen(false);
 
     if (isConfirmed) {
-      deletePost();
+      deleteComment();
     }
   };
 
   return (
     <>
-      <Tooltip title="Delete post" arrow>
+      <Tooltip title="Delete comment" arrow>
         <Button
           variant="contained"
           color="error"
@@ -56,8 +49,8 @@ const DeletePost = ({ postId }: DeletePostProps) => {
         </Button>
       </Tooltip>
       <ConfirmDialog
-        title="Delete Post"
-        text="Are you sure you want to delete this post?"
+        title="Delete Comment"
+        text="Are you sure you want to delete this comment?"
         open={isConfirmDialogOpen}
         onClose={handleCloseConfirm}
       />
@@ -65,4 +58,4 @@ const DeletePost = ({ postId }: DeletePostProps) => {
   );
 };
 
-export default DeletePost;
+export default DeleteComment;

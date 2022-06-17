@@ -73,3 +73,37 @@ export const DELETE_POST_MUTATION = gql`
     deletePost(selector: { id: $id })
   }
 `;
+
+export const CREATE_COMMENT_MUTATION = gql`
+  mutation CreateComment($postId: ID!, $text: String!) {
+    createComment(data: { postId: $postId, text: $text }) {
+      id
+      comments {
+        id
+        text
+        createdAt
+        author {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
+
+export const DELETE_COMMENT_MUTATION = gql`
+  mutation DeleteComment($postId: ID!, $commentId: ID!) {
+    deleteComment(selector: { postId: $postId, commentId: $commentId }) {
+      id
+      comments {
+        id
+        text
+        createdAt
+        author {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
