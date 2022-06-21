@@ -2,7 +2,7 @@ import * as pino from 'pino';
 import { isEmpty } from 'lodash';
 import { PostRepository } from '@local/db-store/post/repository';
 import { Post } from '@local/db-store/post/model';
-import { CreatePostData, PostFilter, PostSelector } from '@local/graphql/types/post';
+import { CreatePostData, PostFeed, PostFilter, PostSelector } from '@local/graphql/types/post';
 import { User } from '@local/db-store/user/model';
 import { CommentSelector, CreateCommentData } from '@local/graphql/types/comment';
 import {
@@ -10,6 +10,7 @@ import {
   validateCreateCommentData,
 } from '@local/services/post/validators';
 import { InputError, UserAuthorisationError } from '@local/errors/types';
+import { Page } from '@local/graphql/types/common';
 
 export class PostService {
   private readonly repository: PostRepository;
@@ -60,6 +61,13 @@ export class PostService {
 
   public getPosts(filter: PostFilter): Promise<Post[]> {
     return this.repository.getPosts(filter);
+  }
+
+  public async getPostFeed(filter: PostFilter, page?: Page): Promise<PostFeed> {
+    const totalCount = await this.repository.getPostsCount(filter);
+    const items = await this.repository.getPosts(filter, page);
+
+    return { items, pageInfo: page, totalCount };
   }
 
   public async createComment(user: User, data: CreateCommentData): Promise<Post> {

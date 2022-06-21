@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { CircularProgress, Grid, Typography } from '@mui/material';
-import { POSTS_QUERY } from '../queries';
+import { CircularProgress, Grid, Pagination, Typography } from '@mui/material';
+import { POSTS_BATCH_QUERY } from '../queries';
 import ApplicationBar from '../components/application-bar/ApplicationBar';
 import { Post } from '../../types';
 import PostCard from './components/PostCard';
 import PostForm from './components/PostForm';
+import { POSTS_COUNT_PER_PAGE } from '../helpers';
 
 const HomePage = () => {
-  const { loading, data } = useQuery(POSTS_QUERY);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+
+  const { loading, data } = useQuery(POSTS_BATCH_QUERY, {
+    variables: {
+      offset: page,
+      limit: POSTS_COUNT_PER_PAGE,
+    },
+    onCompleted: (data) => {
+      setTotalCount(Math.ceil(data.posts.totalCount / POSTS_COUNT_PER_PAGE));
+    },
+  });
+
+  const handlePageChange = (_: any, value: number) => {
+    setPage(value);
+  };
 
   return (
     <div>
@@ -31,13 +47,24 @@ const HomePage = () => {
             </div>
           ) : (
             data &&
-            data.posts.map((post: Post, index: number) => (
+            data.posts.items.map((post: Post, index: number) => (
               <Grid item xs={2} sm={4} md={4} key={index}>
                 <PostCard post={post} />
               </Grid>
             ))
           )}
         </Grid>
+        {data && (
+          <Grid item xs={2} sm={4} md={4} key="pagination" sx={{ mt: 4, mb: 4 }}>
+            <Pagination
+              color="primary"
+              variant="outlined"
+              count={totalCount}
+              page={page}
+              onChange={handlePageChange}
+            />
+          </Grid>
+        )}
       </Grid>
     </div>
   );

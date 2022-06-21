@@ -1,6 +1,7 @@
 import { ApolloServerContext } from '@local/graphql/context';
 import { PostFilter, PostSelector } from '@local/graphql/types/post';
 import { Post } from '@local/db-store/post/model';
+import { Page } from '@local/graphql/types/common';
 
 export const postRootQueriesResolvers = {
   post: async (_: any, args: { selector: PostSelector }, { postService }: ApolloServerContext) => {
@@ -9,10 +10,14 @@ export const postRootQueriesResolvers = {
     return await postService.getPost(selector);
   },
 
-  posts: async (_: any, args: { filter: PostFilter }, { postService }: ApolloServerContext) => {
-    const { filter } = args;
+  posts: async (
+    _: any,
+    args: { filter: PostFilter; page: Page },
+    { postService }: ApolloServerContext
+  ) => {
+    const { filter, page } = args;
 
-    return await postService.getPosts(filter);
+    return await postService.getPostFeed(filter, page);
   },
 };
 

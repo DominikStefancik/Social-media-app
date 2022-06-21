@@ -1,9 +1,9 @@
+import { ApolloServer } from 'apollo-server-express';
+
 import { getAppConfig } from '@local/config';
 import { getLogger } from '@local/logging/logger';
 import { MongooseConnection } from '@local/db-store/mongoose-connection';
-import { ApolloServer } from 'apollo-server-express';
-import { schema as typeDefs } from '@local/graphql/schema';
-import { resolvers } from '@local/graphql/resolvers/resolvers';
+import schema from './graphql/schema';
 import { getContext } from '@local/graphql/context';
 
 export const setup = async () => {
@@ -21,9 +21,9 @@ export const setup = async () => {
   await dbConnection.connect();
 
   const context = getContext(logger);
+
   const apolloServer = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     context,
     logger,
   });

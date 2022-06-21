@@ -12,7 +12,8 @@ import {
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import React, { FormEvent, useState } from 'react';
 import { CREATE_POST_MUTATION } from '../../mutations';
-import { POSTS_QUERY } from '../../queries';
+import { POSTS_BATCH_QUERY } from '../../queries';
+import { POSTS_COUNT_PER_PAGE } from '../../helpers';
 
 const PostForm = () => {
   const [text, setText] = useState('');
@@ -28,11 +29,20 @@ const PostForm = () => {
     // it is usually used for updating the Apollo cache
     update(cache, result) {
       // update Apollo cache with the all posts including the one we have successfully created
-      const data: any = cache.readQuery({ query: POSTS_QUERY });
+      const data: any = cache.readQuery({
+        query: POSTS_BATCH_QUERY,
+        variables: {
+          offset: 1,
+          limit: POSTS_COUNT_PER_PAGE,
+        },
+      });
       cache.writeQuery({
-        query: POSTS_QUERY,
+        query: POSTS_BATCH_QUERY,
         data: {
-          posts: [...data.posts, result.data.createPost],
+          posts: {
+            ...data.posts,
+            items: [...data.posts.items, result.data.createPost],
+          },
         },
       });
 

@@ -7,6 +7,7 @@ import { PostFilter, PostSelector } from '@local/graphql/types/post';
 import { CommentSelector } from '@local/graphql/types/comment';
 import { User } from '../user/model';
 import { getUserDetailsAsString } from '../utils';
+import { Page } from '@local/graphql/types/common';
 
 export class PostRepository {
   private readonly model: mongoose.Model<Post>;
@@ -58,8 +59,22 @@ export class PostRepository {
     return this.model.findOne(selector);
   }
 
-  public async getPosts(filter: PostFilter): Promise<Post[]> {
+  public async getPosts(filter: PostFilter, page?: Page): Promise<Post[]> {
+    if (page) {
+      const { limit, offset } = page;
+
+      return this.model
+        .find(this.toMongoFilter(filter))
+        .sort({ createdAt: '-1' })
+        .skip((offset - 1) * limit)
+        .limit(limit);
+    }
+
     return this.model.find(this.toMongoFilter(filter));
+  }
+
+  public async getPostsCount(filter: PostFilter): Promise<number> {
+    return this.model.find(this.toMongoFilter(filter)).count();
   }
 
   public async createComment(author: User, postId: string, text: string): Promise<Post> {

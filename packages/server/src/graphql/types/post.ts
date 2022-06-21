@@ -1,3 +1,6 @@
+import { Post } from '@local/db-store/post/model';
+import { PageInfo } from './common';
+
 export interface PostSelector {
   id: string;
 }
@@ -12,4 +15,10 @@ export interface PostFilter {
 
 export interface CreatePostData {
   text: string;
+}
+
+export interface PostFeed {
+  items: Post[];
+  pageInfo?: PageInfo;
+  totalCount: number;
 }

@@ -1,26 +1,33 @@
 import { gql } from '@apollo/client';
 
-export const POSTS_QUERY = gql`
-  query Posts {
-    posts {
-      id
-      text
-      createdAt
-      lastUpdated
-      author {
-        id
-        username
-      }
-      comments {
+export const POSTS_BATCH_QUERY = gql`
+  query Posts($offset: Int!, $limit: Int!) {
+    posts(page: { offset: $offset, limit: $limit }) {
+      items {
         id
         text
         createdAt
+        lastUpdated
         author {
           id
           username
         }
+        comments {
+          id
+          text
+          createdAt
+          author {
+            id
+            username
+          }
+        }
+        likes
       }
-      likes
+      pageInfo {
+        limit
+        offset
+      }
+      totalCount
     }
   }
 `;

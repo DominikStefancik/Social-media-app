@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon';
 
+export const POSTS_COUNT_PER_PAGE = 6;
+
 export const getDurationAsText = (date: string): string => {
   const dateTime = DateTime.fromISO(date);
   const duration = DateTime.now().diff(dateTime, ['years', 'months', 'days', 'hours', 'minutes']);
